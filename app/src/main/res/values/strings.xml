@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Blocker</string>
+    <string name="accessibility_service_description">Blocker détecte quelle application passe au premier plan pour afficher un délai d\'attente sur les apps que vous souhaitez contrôler. Aucun contenu d\'écran n\'est lu.</string>
+</resources>
