@@ -84,7 +84,14 @@
 
     <!-- About section -->
     <string name="guide_about_title">About UnScrolled</string>
-    <string name="guide_about_body">UnScrolled is an independent app built to fight scroll addiction. The tips and practices you\'ll find here are based on what personally works for me — I\'m not a medical professional. Please think critically, adapt what fits you, and seek professional support if needed.\n\nThis app is actively developed. If you run into a bug or have a suggestion, feel free to reach out — your feedback genuinely helps.</string>
+    <string name="guide_about_project_title">The project</string>
+    <string name="guide_about_project_body">An independent app created to help fight scroll addiction — TikTok, YouTube Shorts, Instagram Reels, and more. The tips shared here come from personal experience. I\'m not a medical professional; adapt what works for you and seek help if needed.</string>
+    <string name="guide_about_privacy_title">Privacy</string>
+    <string name="guide_about_privacy_body">All your data (scrolls, screen time, blocked apps) stays on your device. Nothing is sent or collected externally. Ever.</string>
+    <string name="guide_about_permissions_title">Required permissions</string>
+    <string name="guide_about_permissions_body">The app uses the Accessibility Service to detect when a blocked app is opened and to count scrolls. This permission is required for blocking and tracking to work — without it the app cannot function.</string>
+    <string name="guide_about_feedback_title">Feedback &amp; contact</string>
+    <string name="guide_about_feedback_body">This app is actively developed. If you hit a bug or have a suggestion, your feedback genuinely helps improve it. Android only.</string>
 
     <!-- Features section -->
     <string name="guide_features_title">How it works</string>

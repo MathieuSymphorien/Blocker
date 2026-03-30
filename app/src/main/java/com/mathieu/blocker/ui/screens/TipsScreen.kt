@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.BatteryChargingFull
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Visibility
@@ -181,21 +183,7 @@ fun TipsScreen() {
             )
         }
         item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(0.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.guide_about_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            AboutCard(modifier = Modifier.padding(horizontal = 16.dp))
         }
 
         // ── Fonctionnalités ───────────────────────────────────────────────────
@@ -245,6 +233,82 @@ fun TipsScreen() {
         }
 
         item { Spacer(modifier = Modifier.height(24.dp)) }
+    }
+}
+
+// ── About composables ─────────────────────────────────────────────────────────
+
+private data class AboutItem(
+    val icon: ImageVector,
+    val title: String,
+    val body: String
+)
+
+@Composable
+private fun AboutCard(modifier: Modifier = Modifier) {
+    val items = listOf(
+        AboutItem(Icons.Default.Favorite,    stringResource(R.string.guide_about_project_title),     stringResource(R.string.guide_about_project_body)),
+        AboutItem(Icons.Default.Lock,        stringResource(R.string.guide_about_privacy_title),     stringResource(R.string.guide_about_privacy_body)),
+        AboutItem(Icons.Default.Settings,    stringResource(R.string.guide_about_permissions_title), stringResource(R.string.guide_about_permissions_body)),
+        AboutItem(Icons.Default.Lightbulb,   stringResource(R.string.guide_about_feedback_title),    stringResource(R.string.guide_about_feedback_body)),
+    )
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            items.forEachIndexed { index, item ->
+                AboutRow(item = item)
+                if (index < items.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AboutRow(item: AboutItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = item.icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = item.body,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
