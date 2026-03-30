@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UnScrolled</string>
+    <string name="accessibility_service_description">UnScrolled détecte quelle application passe au premier plan et suit les événements de scroll pour afficher un délai d\'attente et comptabiliser votre utilisation. Aucun contenu d\'écran n\'est lu.</string>
+
+    <!-- Navigation bas de page -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_tips">Conseils</string>
+    <string name="nav_guide">Guide</string>
+    <string name="nav_settings">Réglages</string>
+
+    <!-- Écran d'accueil -->
+    <string name="home_subtitle">Reprends le contrôle</string>
+    <string name="home_status_active">Actif</string>
+    <string name="home_status_inactive">Inactif</string>
+    <string name="home_service_inactive_title">Service inactif</string>
+    <string name="home_service_inactive_desc">Active l\'accessibilité pour commencer</string>
+    <string name="home_open_accessibility">Ouvrir les paramètres d\'accessibilité</string>
+    <string name="stat_scrolls">Scrolls</string>
+    <string name="stat_screen">Temps</string>
+    <string name="stat_urges">Tentatives</string>
+    <string name="stat_returns">Retours</string>
+    <string name="home_active_profile">Profil actif</string>
+    <string name="home_scheduler_active">Planificateur actif</string>
+    <string name="home_no_blocked_apps">Aucune app bloquée</string>
+    <string name="home_manage_apps">Gérer les apps bloquées</string>
+    <plurals name="home_blocked_apps_count">
+        <item quantity="one">%d app bloquée</item>
+        <item quantity="other">%d apps bloquées</item>
+    </plurals>
+
+    <!-- Écran Stats -->
+    <string name="stats_title">Stats</string>
+    <string name="stats_subtitle">Ton utilisation en un coup d\'œil</string>
+
+    <!-- Écran Conseils -->
+    <string name="tips_title">Conseils</string>
+    <string name="tips_subtitle">Reprends le contrôle de ton attention</string>
+
+    <string name="tip_1_category">Prévention</string>
+    <string name="tip_1_title">Désactive les notifications</string>
+    <string name="tip_1_desc">Les notifications sont le premier déclencheur du scroll compulsif. Désactive-les pour les apps de réseaux sociaux. Tu ne manqueras rien d\'important.</string>
+
+    <string name="tip_2_category">Habitude</string>
+    <string name="tip_2_title">Règle la règle des 2 secondes</string>
+    <string name="tip_2_desc">Avant d\'ouvrir une app, demande-toi : « Est-ce que j\'en ai besoin pour quelque chose de précis ? » Si tu ne peux pas répondre en 2 secondes, c\'est que non.</string>
+
+    <string name="tip_3_category">Environnement</string>
+    <string name="tip_3_title">Éloigne ton téléphone</string>
+    <string name="tip_3_desc">Pose ton téléphone dans une autre pièce quand tu travailles ou que tu passes du temps en famille. La distance physique réduit la tentation.</string>
+
+    <string name="tip_4_category">Routine</string>
+    <string name="tip_4_title">Pas de téléphone au réveil</string>
+    <string name="tip_4_desc">Attends au moins 30 minutes après le réveil avant de regarder ton téléphone. Commence ta journée par toi, pas par le scroll.</string>
+
+    <string name="tip_5_category">Remplacement</string>
+    <string name="tip_5_title">Remplace le scroll par une habitude</string>
+    <string name="tip_5_desc">Quand tu as envie de scroller, fais autre chose : lis une page d\'un livre, fais 10 pompes, bois un verre d\'eau. Le cerveau a besoin d\'un remplacement.</string>
+
+    <string name="tip_6_category">Éducation</string>
+    <string name="tip_6_title">Comprends le design addictif</string>
+    <string name="tip_6_desc">Les apps sont conçues pour te garder. Le scroll infini, les notifications, les likes : tout est calculé. En être conscient est la première étape.</string>
+
+    <string name="tip_7_category">Astuce</string>
+    <string name="tip_7_title">Passe en noir et blanc</string>
+    <string name="tip_7_desc">Active le mode niveaux de gris sur ton téléphone. Les couleurs vives stimulent le cerveau et rendent le scroll plus attractif.</string>
+
+    <string name="tip_8_category">Sommeil</string>
+    <string name="tip_8_title">Charge ton téléphone loin du lit</string>
+    <string name="tip_8_desc">Ne charge pas ton téléphone sur ta table de nuit. Utilise un vrai réveil. Le scroll avant de dormir affecte la qualité du sommeil.</string>
+
+    <string name="tip_9_category">Progression</string>
+    <string name="tip_9_title">Fixe-toi des objectifs réalistes</string>
+    <string name="tip_9_desc">Ne cherche pas à tout supprimer d\'un coup. Réduis de 15 minutes par semaine. La progression lente est plus durable que le changement radical.</string>
+
+    <string name="tip_10_category">UnScrolled</string>
+    <string name="tip_10_title">Utilise le mode Boulot</string>
+    <string name="tip_10_desc">Active le profil Boulot dans UnScrolled pendant tes heures de travail. Tu peux configurer un set d\'apps bloquées différent pour le travail et la maison.</string>
+
+    <!-- Guide (onglet fusionné Conseils + Guide) -->
+    <string name="guide_title">Guide</string>
+    <string name="guide_subtitle">Conseils, fonctionnalités &amp; à propos</string>
+
+    <!-- Section À propos -->
+    <string name="guide_about_title">À propos d\'UnScrolled</string>
+    <string name="guide_about_body">UnScrolled est une application indépendante conçue et développée pour combattre l\'addiction personnelle au scroll. Les conseils et pratiques que vous y trouverez sont basés sur ce qui fonctionne pour moi. Je ne suis pas médecin, pensez à les remettre en question et à vous faire accompagner si vous le souhaitez.\n\nCette application est en cours de développement. Si vous rencontrez un bug ou avez une suggestion, n\'hésitez pas à me le signaler, vos retours m\'aident vraiment.\n\nCette application est uniquement disponible sur le playstore pour les appareils Android.\n\nL\'application a besoin d\'autorisations pour pouvoir fonctionner, elle a besoin de pouvoir voir les applications qui sont installées sur votre téléphone ainsi que vos cliques et scroll lorsque vous interagissez avec elles. Ces autorisations permettent à l\'application de \"voir\" votre clique sur une application bloquée pour vous afficher un écran d\'attente pour vous donner la possibilité de revenir en arrière et permettent de compter les scrolls et le temps passer sur les applications bloquées. L\'application ne collecte aucune donnée personnelle à l\'exception des applications enregistré comme bloquante avec leur nombre de scrolls, le temps passé, les tentatives d\'ouverture et les retours suite a une tentative. Toutes les données collectées restent sur votre téléphone, AUCUNE données n\'est transmise à l\'extérieur. Je ne sais pas si cela peut avoir un impact sur la batterie du téléphone (a priori non mais je n\'ai pas approfondi le sujet).\n\nQuel est le but de cette app ?\nLe but de cette app est de reprendre le contrôle sur son addiction au scroll. Les outils de stats dans l\'onglet \"Stats\" vous permettrons de chiffrer votre addiction. L\'onglet \"Réglage\" vous aidera mécaniquement à réduire votre scroll. En utilisant plusieurs profils et le Planificateur, votre addiction profonde et intense pourra déjà diminuer sur les temps que vous considérer comme important. On ajoutera a cela la limite quotidienne de scrolls qui permettra de mettre des gardes fous a votre addiction. Pour finir vous pouvez définir un objectif de limite de scroll a atteindre pour économiser X heures (calcul fait a partir de vos données).</string>
+
+    <!-- Section fonctionnalités -->
+    <string name="guide_features_title">Comment ça marche</string>
+
+    <string name="guide_feat_profiles_title">Profils</string>
+    <string name="guide_feat_profiles_desc">Créez plusieurs profils (ex : Maison, Boulot) avec chacun leur liste d\'apps bloquées et leurs réglages. Basculez manuellement ou laissez le planificateur le faire automatiquement.</string>
+
+    <string name="guide_feat_timer_title">Timer de blocage</string>
+    <string name="guide_feat_timer_desc">Quand vous essayez d\'ouvrir une app bloquée, un compte à rebours s\'affiche. Cette friction est volontaire : elle vous laisse le temps de vous demander si vous en avez vraiment besoin.</string>
+
+    <string name="guide_feat_schedule_title">Planificateur</string>
+    <string name="guide_feat_schedule_desc">Activez automatiquement un profil sur des jours et des plages horaires définis, idéal pour les heures de travail ou les sessions de concentration en soirée.</string>
+
+    <string name="guide_feat_stats_title">Statistiques</string>
+    <string name="guide_feat_stats_desc">Suivez vos scrolls quotidiens, le temps d\'écran sur les apps bloquées et le nombre de tentatives d\'ouverture. Utilisez la vue 7 jours pour repérer les tendances.</string>
+
+    <string name="guide_feat_limit_title">Limite journalière</string>
+    <string name="guide_feat_limit_desc">Fixez un nombre maximum de scrolls par jour. Une fois atteint, les apps bloquées deviennent totalement inaccessibles jusqu\'à minuit.</string>
+
+    <!-- Titre de la section conseils (dans l\'écran fusionné) -->
+    <string name="guide_tips_section_title">Conseils</string>
+    <string name="guide_tips_section_subtitle">Des actions concrètes pour réduire le temps d\'écran</string>
+
+    <!-- Paramètres -->
+    <string name="settings_title">Réglages</string>
+    <string name="settings_subtitle">Profils &amp; planification  </string>
+</resources>

@@ -1,4 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Blocker</string>
-    <string name="accessibility_service_description">Blocker détecte quelle application passe au premier plan pour afficher un délai d\'attente sur les apps que vous souhaitez contrôler. Aucun contenu d\'écran n\'est lu.</string>
+    <string name="app_name">UnScrolled</string>
+    <string name="accessibility_service_description">UnScrolled detects which app is in the foreground and tracks scroll events to display a cooldown overlay and count your usage. No screen content is read.</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_tips">Tips</string>
+    <string name="nav_guide">Guide</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- HomeScreen -->
+    <string name="home_subtitle">Take back control</string>
+    <string name="home_status_active">Active</string>
+    <string name="home_status_inactive">Inactive</string>
+    <string name="home_service_inactive_title">Service inactive</string>
+    <string name="home_service_inactive_desc">Enable accessibility to get started</string>
+    <string name="home_open_accessibility">Open accessibility settings</string>
+    <string name="stat_scrolls">Scrolls</string>
+    <string name="stat_screen">Time</string>
+    <string name="stat_urges">Attempts</string>
+    <string name="stat_returns">Returns</string>
+    <string name="home_active_profile">Active profile</string>
+    <string name="home_scheduler_active">Scheduler active</string>
+    <string name="home_no_blocked_apps">No blocked apps</string>
+    <string name="home_manage_apps">Manage blocked apps</string>
+    <plurals name="home_blocked_apps_count">
+        <item quantity="one">%d app blocked</item>
+        <item quantity="other">%d apps blocked</item>
+    </plurals>
+
+    <!-- StatsScreen -->
+    <string name="stats_title">Stats</string>
+    <string name="stats_subtitle">Your usage at a glance</string>
+
+    <!-- TipsScreen -->
+    <string name="tips_title">Tips</string>
+    <string name="tips_subtitle">Take back control of your attention</string>
+
+    <string name="tip_1_category">Prevention</string>
+    <string name="tip_1_title">Turn off notifications</string>
+    <string name="tip_1_desc">Notifications are the #1 trigger for compulsive scrolling. Disable them for social media apps — you won\'t miss anything important.</string>
+
+    <string name="tip_2_category">Habit</string>
+    <string name="tip_2_title">Apply the 2-second rule</string>
+    <string name="tip_2_desc">Before opening an app, ask yourself: "Do I need this for something specific?" If you can\'t answer in 2 seconds, the answer is no.</string>
+
+    <string name="tip_3_category">Environment</string>
+    <string name="tip_3_title">Keep your phone out of reach</string>
+    <string name="tip_3_desc">Leave your phone in another room when working or spending time with family. Physical distance reduces temptation.</string>
+
+    <string name="tip_4_category">Routine</string>
+    <string name="tip_4_title">No phone in the morning</string>
+    <string name="tip_4_desc">Wait at least 30 minutes after waking up before checking your phone. Start your day on your own terms, not by scrolling.</string>
+
+    <string name="tip_5_category">Replacement</string>
+    <string name="tip_5_title">Replace scrolling with a habit</string>
+    <string name="tip_5_desc">When you feel the urge to scroll, do something else: read a page of a book, do 10 push-ups, drink a glass of water. Your brain needs a replacement.</string>
+
+    <string name="tip_6_category">Education</string>
+    <string name="tip_6_title">Understand addictive design</string>
+    <string name="tip_6_desc">Apps are engineered to keep you hooked. Infinite scroll, notifications, likes — all calculated. Being aware of it is the first step.</string>
+
+    <string name="tip_7_category">Trick</string>
+    <string name="tip_7_title">Switch to grayscale</string>
+    <string name="tip_7_desc">Enable grayscale mode on your phone. Bright colours stimulate the brain and make scrolling more attractive.</string>
+
+    <string name="tip_8_category">Sleep</string>
+    <string name="tip_8_title">Charge your phone away from bed</string>
+    <string name="tip_8_desc">Don\'t charge your phone on your nightstand. Use a real alarm clock. Scrolling before sleep degrades sleep quality.</string>
+
+    <string name="tip_9_category">Progress</string>
+    <string name="tip_9_title">Set realistic goals</string>
+    <string name="tip_9_desc">Don\'t try to quit everything at once. Cut 15 minutes per week. Slow progress is more sustainable than radical change.</string>
+
+    <string name="tip_10_category">UnScrolled</string>
+    <string name="tip_10_title">Use Work mode</string>
+    <string name="tip_10_desc">Enable the Work profile in UnScrolled during working hours. You can configure a different set of blocked apps for work and home.</string>
+
+    <!-- Guide (merged Tips + Guide tab) -->
+    <string name="guide_title">Guide</string>
+    <string name="guide_subtitle">Tips, features &amp; about</string>
+
+    <!-- About section -->
+    <string name="guide_about_title">About UnScrolled</string>
+    <string name="guide_about_body">UnScrolled is an independent app built to fight scroll addiction. The tips and practices you\'ll find here are based on what personally works for me — I\'m not a medical professional. Please think critically, adapt what fits you, and seek professional support if needed.\n\nThis app is actively developed. If you run into a bug or have a suggestion, feel free to reach out — your feedback genuinely helps.</string>
+
+    <!-- Features section -->
+    <string name="guide_features_title">How it works</string>
+
+    <string name="guide_feat_profiles_title">Profiles</string>
+    <string name="guide_feat_profiles_desc">Create several profiles (e.g. Home, Work) each with their own list of blocked apps and settings. Switch manually or let the scheduler do it automatically.</string>
+
+    <string name="guide_feat_timer_title">Cooldown timer</string>
+    <string name="guide_feat_timer_desc">When you try to open a blocked app, a countdown appears. This friction is intentional — it gives you a moment to ask yourself if you really need it.</string>
+
+    <string name="guide_feat_schedule_title">Scheduler</string>
+    <string name="guide_feat_schedule_desc">Automatically activate a profile on specific days and time ranges — perfect for work hours or late-night focus sessions.</string>
+
+    <string name="guide_feat_stats_title">Statistics</string>
+    <string name="guide_feat_stats_desc">Track your daily scrolls, screen time on blocked apps, and how many times you tried to open them. Use the 7-day view to spot trends.</string>
+
+    <string name="guide_feat_limit_title">Daily scroll limit</string>
+    <string name="guide_feat_limit_desc">Set a maximum number of scrolls per day. When reached, blocked apps become fully inaccessible until midnight — no timer, no challenge.</string>
+
+    <!-- Tips section title (within the merged screen) -->
+    <string name="guide_tips_section_title">Tips</string>
+    <string name="guide_tips_section_subtitle">Practical ways to reduce screen time</string>
+
+    <!-- SettingsScreen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Profiles, schedules &amp; challenges</string>
 </resources>

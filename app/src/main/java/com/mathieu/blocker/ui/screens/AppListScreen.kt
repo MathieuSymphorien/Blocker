@@ -58,7 +58,6 @@ fun AppListScreen(onBack: () -> Unit) {
     var apps by remember { mutableStateOf<List<AppInfo>>(emptyList()) }
     var blockedApps by remember { mutableStateOf<Set<String>>(emptySet()) }
 
-    // Load apps and blocked set
     LaunchedEffect(Unit) {
         blockedApps = BlockerPreferences.getBlockedApps(context).first()
 
@@ -88,7 +87,6 @@ fun AppListScreen(onBack: () -> Unit) {
         }
     }
 
-    // Also observe blockedApps changes
     LaunchedEffect(Unit) {
         BlockerPreferences.getBlockedApps(context).collect { blocked ->
             blockedApps = blocked
@@ -144,7 +142,10 @@ fun AppListScreen(onBack: () -> Unit) {
 }
 
 @Composable
-private fun AppListItem(app: AppInfo, onToggle: () -> Unit) {
+private fun AppListItem(
+    app: AppInfo,
+    onToggle: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -55,6 +55,13 @@ Blocker intercepte l'ouverture d'applications que tu as identifiees comme addict
 - Navigation Compose
 - Min SDK 24, Target SDK 36
 
+
+## Debug
+sur windows
+adb devices
+adb logcat -d | Select-String -Pattern "FATAL|AndroidRuntime|blocker" -Context 0,20
+
+
 ## Contact
 
 mathieusdev@gmail.com
