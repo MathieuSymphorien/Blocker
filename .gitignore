@@ -1,17 +1,44 @@
+# Android generated
 *.iml
+*.apk
+*.aab
+*.ap_
+
+# Build outputs
+/build
+**/build/
+/captures
+
+# Gradle
 .gradle
 /local.properties
+gradle.properties.local
+
+# Android Studio / IntelliJ IDEA
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
+*.iml
+
+# Native build
 .externalNativeBuild
 .cxx
-local.properties
 
-./claude/*
+# Release artifacts (never commit APK/AAB to git)
+app/release/
+
+# Signing — NEVER commit keystores or signing config
+*.jks
+*.keystore
+key.properties
+keystore.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json
