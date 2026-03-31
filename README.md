@@ -61,6 +61,8 @@ sur windows
 adb devices
 adb logcat -d | Select-String -Pattern "FATAL|AndroidRuntime|blocker" -Context 0,20
 
+## Generation d'une prod
+./gradlew bundleRelease
 
 ## Contact
 

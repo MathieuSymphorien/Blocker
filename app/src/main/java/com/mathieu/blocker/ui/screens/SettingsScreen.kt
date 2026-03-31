@@ -88,7 +88,7 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
     var plannerEntries by remember { mutableStateOf<List<PlannerEntry>>(emptyList()) }
     var dailyLimit by remember { mutableIntStateOf(0) }
     var dailyLimitSlider by remember { mutableFloatStateOf(0f) }
-    var weeklyAvg by remember { mutableStateOf<UsageStatsEntity?>(null) }
+    var weeklyTotals by remember { mutableStateOf<UsageStatsEntity?>(null) }
     var showAddPlannerDialog by remember { mutableStateOf(false) }
     var showAddProfileDialog by remember { mutableStateOf(false) }
     var editingProfile by remember { mutableStateOf<Profile?>(null) }
@@ -101,7 +101,7 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
         BlockerPreferences.getDailyScrollLimit(context).collect { dailyLimit = it; dailyLimitSlider = it.toFloat() }
     }
     LaunchedEffect(Unit) {
-        dao.getAveragesForRange(sevenDaysAgo, today).collect { weeklyAvg = it }
+        weeklyTotals = dao.getTotalsForRange(sevenDaysAgo, today)
     }
 
     Column(
@@ -297,13 +297,12 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
         }
 
         // Objectif : sauver X heures/mois
-        val avgDailyTimeMs = weeklyAvg?.scrollTimeMs ?: 0L
-        val avgDailyScrolls = weeklyAvg?.scrollCount ?: 0
-        if (avgDailyScrolls > 0 && avgDailyTimeMs > 0) {
-            Spacer(modifier = Modifier.height(0.dp))
+        val weeklyTotalTimeMs = weeklyTotals?.scrollTimeMs ?: 0L
+        val weeklyTotalScrolls = weeklyTotals?.scrollCount ?: 0
+        if (weeklyTotalScrolls > 0 && weeklyTotalTimeMs > 0) {
             SaveHoursGoalCard(
-                avgDailyTimeMs = avgDailyTimeMs,
-                avgDailyScrolls = avgDailyScrolls,
+                weeklyTotalTimeMs = weeklyTotalTimeMs,
+                weeklyTotalScrolls = weeklyTotalScrolls,
                 currentLimit = dailyLimit,
                 onSetLimit = { limit ->
                     scope.launch { BlockerPreferences.setDailyScrollLimit(context, limit) }
@@ -546,18 +545,22 @@ private fun EditProfileDialog(profile: Profile, onDismiss: () -> Unit, onSave: (
 
 @Composable
 private fun SaveHoursGoalCard(
-    avgDailyTimeMs: Long,
-    avgDailyScrolls: Int,
+    weeklyTotalTimeMs: Long,
+    weeklyTotalScrolls: Int,
     currentLimit: Int,
     onSetLimit: (Int) -> Unit
 ) {
+    // Moyenne journalière réelle sur 7 jours
+    val avgDailyTimeMs = weeklyTotalTimeMs / 7L
+    val avgDailyScrolls = (weeklyTotalScrolls / 7).coerceAtLeast(1)
+
     val monthlyProjectionMs = avgDailyTimeMs * 30L
     val monthlyProjectionH = (monthlyProjectionMs / 3_600_000L).toInt().coerceAtLeast(1)
     var savingsHours by remember(monthlyProjectionH) { mutableFloatStateOf(monthlyProjectionH / 2f) }
 
     val targetMonthlyMs = monthlyProjectionMs - (savingsHours * 3_600_000L).toLong()
     val targetDailyMs = (targetMonthlyMs / 30L).coerceAtLeast(0L)
-    val msPerScroll = avgDailyTimeMs / avgDailyScrolls
+    val msPerScroll = if (avgDailyScrolls > 0) avgDailyTimeMs / avgDailyScrolls else 0L
     val suggestedLimit = if (msPerScroll > 0) (targetDailyMs / msPerScroll).toInt() else 0
 
     Card(
@@ -575,7 +578,7 @@ private fun SaveHoursGoalCard(
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                "Tu passes ~${monthlyProjectionH}h/mois sur les apps bloquées.",
+                "Sur les 7 derniers jours : ${weeklyTotalTimeMs / 3_600_000L}h${(weeklyTotalTimeMs % 3_600_000L / 60_000L).toString().padStart(2, '0')} au total, soit ~${monthlyProjectionH}h/mois.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

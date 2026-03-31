@@ -44,6 +44,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,7 +79,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var isServiceEnabled by remember { mutableStateOf(false) }
-    var showWelcomeDialog by remember { mutableStateOf(isFirstLaunch) }
+    var showWelcomeDialog by rememberSaveable { mutableStateOf(isFirstLaunch) }
     var profiles by remember { mutableStateOf<List<Profile>>(emptyList()) }
     var activeProfileId by remember { mutableStateOf("default_home") }
     var effectiveProfile by remember { mutableStateOf<Profile?>(null) }

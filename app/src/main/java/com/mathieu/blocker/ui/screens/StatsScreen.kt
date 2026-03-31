@@ -78,7 +78,7 @@ fun StatsScreen() {
     var autoThreshold by remember { mutableIntStateOf(0) }
     var recentData by remember { mutableStateOf<List<UsageStatsEntity>>(emptyList()) }
     var selectedPeriod by remember { mutableStateOf("Semaine") }
-    var mostTemptingApp by remember { mutableStateOf<UsageStatsEntity?>(null) }
+    var perAppData by remember { mutableStateOf<List<UsageStatsEntity>>(emptyList()) }
     var weeklyTotals by remember { mutableStateOf<UsageStatsEntity?>(null) }
     var monthlyTotals by remember { mutableStateOf<UsageStatsEntity?>(null) }
     var yearlyTotals by remember { mutableStateOf<UsageStatsEntity?>(null) }
@@ -136,8 +136,14 @@ fun StatsScreen() {
         weeklyTotals = dao.getTotalsForRange(sevenDaysAgo, today)
         monthlyTotals = dao.getTotalsForRange(twentyNineDaysAgo, today)
         yearlyTotals = dao.getTotalsForRange(threeHundredSixtyFourDaysAgo, today)
-        val perApp = dao.getPerAppTotalsForRange(sevenDaysAgo, today)
-        mostTemptingApp = perApp.maxByOrNull { it.openCount }?.takeIf { it.openCount > 0 }
+    }
+    LaunchedEffect(selectedPeriod) {
+        val (start, end) = when (selectedPeriod) {
+            "Mois" -> twentyNineDaysAgo to today
+            "Année" -> threeHundredSixtyFourDaysAgo to today
+            else -> sevenDaysAgo to today
+        }
+        perAppData = dao.getPerAppTotalsForRange(start, end)
     }
     LaunchedEffect(calendarDisplayYear, calendarDisplayMonth) {
         val startCal = Calendar.getInstance().apply { set(calendarDisplayYear, calendarDisplayMonth, 1) }
@@ -321,13 +327,19 @@ fun StatsScreen() {
                         }
                         if (selectedDateApps.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(8.dp))
+                            val pm = context.packageManager
                             selectedDateApps.forEach { app ->
+                                val appName = try {
+                                    pm.getApplicationLabel(pm.getApplicationInfo(app.packageName, 0)).toString()
+                                } catch (_: Exception) {
+                                    app.packageName.substringAfterLast(".")
+                                }
                                 Row(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
-                                        app.packageName.substringAfterLast("."),
+                                        appName,
                                         style = MaterialTheme.typography.bodySmall,
                                         modifier = Modifier.weight(1f)
                                     )
@@ -337,13 +349,7 @@ fun StatsScreen() {
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-
                             }
-                            Text(
-                                "scr = scroll       min = minute        ret = retour",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         } else if (totals == null || (totals.scrollCount == 0 && totals.openCount == 0)) {
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -469,8 +475,9 @@ fun StatsScreen() {
                         StatItem(value = "${periodTotals.openCount}", label = "Tentatives")
                         StatItem(value = "${periodTotals.returnCount}", label = "Retours")
                     }
-                    if (periodTotals.openCount > 0) {
-                        val resistRate = (periodTotals.returnCount * 100 / periodTotals.openCount).coerceIn(0, 100)
+                    val appsWithOpens = perAppData.filter { it.openCount > 0 }
+                    if (appsWithOpens.isNotEmpty()) {
+                        val resistRate = (appsWithOpens.sumOf { it.returnCount.toDouble() * 100 / it.openCount } / appsWithOpens.size).toInt().coerceIn(0, 100)
                         val (resistLabel, resistColor) = when {
                             resistRate >= 75 -> "Excellente résistance" to Color(0xFF4CAF50)
                             resistRate >= 50 -> "Bonne résistance" to Color(0xFFFFC107)
@@ -507,54 +514,65 @@ fun StatsScreen() {
                     )
                 }
 
-                // App la plus tentante
-                mostTemptingApp?.let { app ->
+
+                // Détail par application
+                if (perAppData.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(12.dp))
                     androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     Spacer(modifier = Modifier.height(12.dp))
-                    val pm = LocalContext.current.packageManager
-                    val appName = try {
-                        pm.getApplicationLabel(pm.getApplicationInfo(app.packageName, 0)).toString()
-                    } catch (_: Exception) {
-                        app.packageName.substringAfterLast(".")
-                    }
-                    val resistRate = if (app.openCount > 0) app.returnCount * 100 / app.openCount else 0
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            "App la plus tentante", style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                appName, style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                "${app.openCount} tentatives · ${app.returnCount} retours",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                    Text(
+                        "Par application",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    val pm = context.packageManager
+                    perAppData.forEach { app ->
+                        val appName = try {
+                            pm.getApplicationLabel(pm.getApplicationInfo(app.packageName, 0)).toString()
+                        } catch (_: Exception) {
+                            app.packageName.substringAfterLast(".")
                         }
-                        Column(horizontalAlignment = Alignment.End) {
-                            Text(
-                                "$resistRate%", style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = if (resistRate >= 50) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error
-                            )
-                            Text(
-                                "résistance", style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        val resistRate = if (app.openCount > 0) app.returnCount * 100 / app.openCount else 0
+                        val resistColor = when {
+                            app.openCount == 0 -> MaterialTheme.colorScheme.onSurfaceVariant
+                            resistRate >= 75 -> Color(0xFF4CAF50)
+                            resistRate >= 50 -> Color(0xFFFFC107)
+                            resistRate >= 25 -> Color(0xFFFF9800)
+                            else -> MaterialTheme.colorScheme.error
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    appName,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Text(
+                                    "${app.scrollCount} scr · ${formatDuration(app.scrollTimeMs)} · ${app.openCount} tent. · ${app.returnCount} ret.",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            if (app.openCount > 0) {
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text(
+                                        "$resistRate%",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = resistColor
+                                    )
+                                    Text(
+                                        "résistance",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -564,7 +582,7 @@ fun StatsScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         // ── 4. Anecdote — distance du pouce ─────────────────────────────────
-        val allScrolls = (weeklyAvg?.scrollCount ?: 0) * 7
+        val allScrolls = weeklyTotals?.scrollCount ?: 0
         if (allScrolls > 0) {
             ScrollDistanceCard(scrollCount = allScrolls, label = "cette semaine")
         } else if ((todayStats?.scrollCount ?: 0) > 0) {
