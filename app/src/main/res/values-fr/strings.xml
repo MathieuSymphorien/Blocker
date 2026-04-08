@@ -121,13 +121,25 @@
         name="guide_about_privacy_body"
     >Toutes vos données (scrolls, temps d\'écran, apps bloquées) restent sur votre téléphone. Aucune donnée n\'est transmise ni collectée à l\'extérieur. Jamais.</string>
     <string name="guide_about_permissions_title">Permissions requises</string>
-    <string
-        name="guide_about_permissions_body"
-    >L\'app utilise le service d\'accessibilité pour détecter l\'ouverture d\'une application bloquée et compter vos scrolls. Cette permission est indispensable au fonctionnement du blocage et du suivi, sans elle, l\'app ne peut pas fonctionner.</string>
+    <string name="guide_about_permissions_body">L\'app utilise deux permissions : le service d\'accessibilité (pour détecter les apps bloquées et compter les scrolls) et l\'exemption d\'optimisation batterie (pour éviter qu\'Android ne coupe le service en arrière-plan). Sans le service d\'accessibilité, l\'app ne peut pas fonctionner. Aucune donnée personnelle n\'est collectée par ces permissions.</string>
     <string name="guide_about_feedback_title">Retours &amp; contact</string>
     <string
         name="guide_about_feedback_body"
     >L\'app est en développement actif. Bugs, suggestions, idées, tout retour m\'aide vraiment à l\'améliorer. Disponible uniquement sur Android.</string>
+
+    <!-- Section compatibilité appareils -->
+    <string name="guide_compat_title">Compatibilité selon ton téléphone</string>
+    <string name="guide_compat_subtitle">Certains fabricants coupent les services en arrière-plan de façon agressive. Si l\'app se désactive toute seule, voici quoi faire selon ton appareil.</string>
+    <string name="guide_compat_battery_title">Optimisation batterie (tous appareils)</string>
+    <string name="guide_compat_battery_desc">Sur l\'écran d\'accueil d\'UnScrolled, si le service est inactif, appuie sur « Désactiver l\'optimisation batterie ». Cela empêche Android de couper le service.</string>
+    <string name="guide_compat_xiaomi_title">Xiaomi / MIUI</string>
+    <string name="guide_compat_xiaomi_desc">Paramètres → Applications → Gérer les applications → UnScrolled → Démarrage automatique → Activer. Désactive aussi l\'optimisation batterie depuis l\'accueil.</string>
+    <string name="guide_compat_samsung_title">Samsung</string>
+    <string name="guide_compat_samsung_desc">Paramètres → Maintenance de l\'appareil → Batterie → UnScrolled → Ne pas optimiser. Ou utilise le bouton batterie sur l\'écran d\'accueil d\'UnScrolled.</string>
+    <string name="guide_compat_huawei_title">Huawei / Honor</string>
+    <string name="guide_compat_huawei_desc">Paramètres → Applications → UnScrolled → Consommation d\'énergie → Lancement des applications → Gérer manuellement → Activer les 3 options.</string>
+    <string name="guide_compat_oneplus_title">OnePlus / Oppo / Realme</string>
+    <string name="guide_compat_oneplus_desc">Paramètres → Batterie → Optimisation de la batterie → Toutes les applis → UnScrolled → Ne pas optimiser.</string>
 
     <!-- Section fonctionnalités -->
     <string name="guide_features_title">Comment ça marche</string>

@@ -89,9 +89,23 @@
     <string name="guide_about_privacy_title">Privacy</string>
     <string name="guide_about_privacy_body">All your data (scrolls, screen time, blocked apps) stays on your device. Nothing is sent or collected externally. Ever.</string>
     <string name="guide_about_permissions_title">Required permissions</string>
-    <string name="guide_about_permissions_body">The app uses the Accessibility Service to detect when a blocked app is opened and to count scrolls. This permission is required for blocking and tracking to work — without it the app cannot function.</string>
+    <string name="guide_about_permissions_body">The app uses two permissions: the Accessibility Service (to detect blocked apps and count scrolls) and battery optimization exemption (to prevent Android from killing the service in the background). Without the Accessibility Service the app cannot function. No personal data is collected by either permission.</string>
     <string name="guide_about_feedback_title">Feedback &amp; contact</string>
     <string name="guide_about_feedback_body">This app is actively developed. If you hit a bug or have a suggestion, your feedback genuinely helps improve it. Android only.</string>
+
+    <!-- Device compatibility section -->
+    <string name="guide_compat_title">Device compatibility</string>
+    <string name="guide_compat_subtitle">Some manufacturers aggressively kill background services. If the app keeps disabling itself, follow the steps for your device.</string>
+    <string name="guide_compat_battery_title">Battery optimisation (all devices)</string>
+    <string name="guide_compat_battery_desc">On the UnScrolled home screen, if the service is inactive, tap "Disable battery optimisation". This prevents Android from sleeping the service.</string>
+    <string name="guide_compat_xiaomi_title">Xiaomi / MIUI</string>
+    <string name="guide_compat_xiaomi_desc">Settings → Apps → Manage apps → UnScrolled → Autostart → Enable. Also disable battery optimisation from the home screen.</string>
+    <string name="guide_compat_samsung_title">Samsung</string>
+    <string name="guide_compat_samsung_desc">Settings → Device care → Battery → UnScrolled → Don\'t optimise. Or use the battery button on the UnScrolled home screen.</string>
+    <string name="guide_compat_huawei_title">Huawei / Honor</string>
+    <string name="guide_compat_huawei_desc">Settings → Apps → UnScrolled → Battery → App launch → Manage manually → Enable all three options.</string>
+    <string name="guide_compat_oneplus_title">OnePlus / Oppo / Realme</string>
+    <string name="guide_compat_oneplus_desc">Settings → Battery → Battery optimisation → All apps → UnScrolled → Don\'t optimise.</string>
 
     <!-- Features section -->
     <string name="guide_features_title">How it works</string>

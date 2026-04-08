@@ -50,16 +50,23 @@ class AppBlockerService : AccessibilityService() {
     private var trackedApp: String? = null
     private var trackedAppStart: Long = 0L
 
-    // Scroll counting — TYPE_WINDOW_CONTENT_CHANGED uniquement, debounce 3s (uniforme sur tous apps)
+    // Scroll counting — TYPE_VIEW_SCROLLED + debounce 800ms
+    // TYPE_VIEW_SCROLLED est déclenché par le framework Android (RecyclerView, ScrollView…)
+    // → cohérent sur tous les appareils et toutes les apps, contrairement à TYPE_WINDOW_CONTENT_CHANGED
     private var pendingScrollCount: Int = 0
     private var lastScrollEventMs: Long = 0L
-    private val SCROLL_DEBOUNCE_MS = 3000L
+    private val SCROLL_DEBOUNCE_MS = 800L
 
     // Daily scroll limit
     private var dailyScrollLimit: Int = 0  // 0 = disabled
     private var dailyScrollCount: Int = 0  // in-memory counter, synced from DB on startup
     private var dailyLimitReached: Boolean = false
     private var lastCheckedDate: String = ""
+
+    // Daily time limit
+    private var dailyTimeLimit: Long = 0L  // 0 = disabled (ms)
+    private var dailyTimeMs: Long = 0L     // in-memory total today (ms)
+    private var dailyTimeLimitReached: Boolean = false
 
     // System packages to never track or block (regardless of blocked list)
     private val systemPackages = setOf(
@@ -92,14 +99,24 @@ class AppBlockerService : AccessibilityService() {
             }
         }
 
-        // Load today's scroll count from DB on startup (restores state after service restart)
+        // Observe daily time limit
+        serviceScope.launch {
+            BlockerPreferences.getDailyTimeLimit(this@AppBlockerService).collect { limit ->
+                dailyTimeLimit = limit
+            }
+        }
+
+        // Load today's counters from DB on startup (restores state after service restart)
         serviceScope.launch(Dispatchers.IO) {
             val today = dateFormat.format(Date())
             val totals = dao.getDailyTotals(today).first()
-            val limit = BlockerPreferences.getDailyScrollLimit(this@AppBlockerService).first()
+            val scrollLimit = BlockerPreferences.getDailyScrollLimit(this@AppBlockerService).first()
+            val timeLimit = BlockerPreferences.getDailyTimeLimit(this@AppBlockerService).first()
             serviceScope.launch(Dispatchers.Main) {
                 dailyScrollCount = totals.scrollCount
-                if (limit > 0 && dailyScrollCount >= limit) dailyLimitReached = true
+                dailyTimeMs = totals.scrollTimeMs
+                if (scrollLimit > 0 && dailyScrollCount >= scrollLimit) dailyLimitReached = true
+                if (timeLimit > 0L && dailyTimeMs >= timeLimit) dailyTimeLimitReached = true
             }
         }
 
@@ -164,19 +181,21 @@ class AppBlockerService : AccessibilityService() {
 
         when (event.eventType) {
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> handleWindowChanged(packageName)
-            AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> handleScrollEvent(packageName)
+            AccessibilityEvent.TYPE_VIEW_SCROLLED -> handleScrollEvent(packageName)
         }
     }
 
     private fun handleWindowChanged(packageName: String) {
         if (isCountdownActive) return
 
-        // Reset daily limit flag at midnight
+        // Reset daily limits at midnight
         val today = dateFormat.format(Date())
         if (today != lastCheckedDate) {
             lastCheckedDate = today
             dailyScrollCount = 0
             dailyLimitReached = false
+            dailyTimeMs = 0L
+            dailyTimeLimitReached = false
         }
 
         // Never block or track launchers
@@ -195,18 +214,26 @@ class AppBlockerService : AccessibilityService() {
 
         if (packageName !in effectiveProfile.blockedApps) return
 
-        // Vérification limite journalière : compteur mémoire + scrolls en cours
+        // Vérification limite journalière scrolls
         val effectiveScrolls = dailyScrollCount + pendingScrollCount
         if (!dailyLimitReached && dailyScrollLimit > 0 && effectiveScrolls >= dailyScrollLimit) {
             dailyLimitReached = true
         }
-        if (dailyLimitReached && overlayView == null) {
+
+        // Vérification limite journalière temps (inclut la session en cours si même app)
+        val currentSessionMs = if (trackedApp == packageName && trackedAppStart > 0L)
+            System.currentTimeMillis() - trackedAppStart else 0L
+        val effectiveTimeMs = dailyTimeMs + currentSessionMs
+        if (!dailyTimeLimitReached && dailyTimeLimit > 0L && effectiveTimeMs >= dailyTimeLimit) {
+            dailyTimeLimitReached = true
+        }
+
+        if ((dailyLimitReached || dailyTimeLimitReached) && overlayView == null) {
             showCountdownOverlay(packageName, limitReached = true)
             return
         }
 
         // Sync DB en arrière-plan pour corriger toute désynchronisation (redémarrage service, etc.)
-        // Si la DB révèle que la limite est atteinte, on expulse l'utilisateur
         if (dailyScrollLimit > 0 && !dailyLimitReached) {
             serviceScope.launch(Dispatchers.IO) {
                 val dbCount = dao.getDailyTotals(today).first().scrollCount
@@ -214,6 +241,18 @@ class AppBlockerService : AccessibilityService() {
                     if (dbCount > dailyScrollCount) dailyScrollCount = dbCount
                     if (!dailyLimitReached && dailyScrollCount + pendingScrollCount >= dailyScrollLimit) {
                         dailyLimitReached = true
+                        goHome()
+                    }
+                }
+            }
+        }
+        if (dailyTimeLimit > 0L && !dailyTimeLimitReached) {
+            serviceScope.launch(Dispatchers.IO) {
+                val dbTimeMs = dao.getDailyTotals(today).first().scrollTimeMs
+                serviceScope.launch(Dispatchers.Main) {
+                    if (dbTimeMs > dailyTimeMs) dailyTimeMs = dbTimeMs
+                    if (!dailyTimeLimitReached && dailyTimeMs >= dailyTimeLimit) {
+                        dailyTimeLimitReached = true
                         goHome()
                     }
                 }
@@ -263,10 +302,15 @@ class AppBlockerService : AccessibilityService() {
 
         if (duration < 1000L) return // ignore sessions shorter than 1 second
 
-        // Update in-memory counter synchronously so handleWindowChanged sees it immediately
+        // Update in-memory counters synchronously so handleWindowChanged sees them immediately
         dailyScrollCount += count
         if (dailyScrollLimit > 0 && dailyScrollCount >= dailyScrollLimit && !dailyLimitReached) {
             dailyLimitReached = true
+            goHome()
+        }
+        dailyTimeMs += duration
+        if (dailyTimeLimit > 0L && dailyTimeMs >= dailyTimeLimit && !dailyTimeLimitReached) {
+            dailyTimeLimitReached = true
             goHome()
         }
 

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -28,8 +29,9 @@ object BlockerPreferences {
     // Planner
     private val PLANNER_JSON = stringPreferencesKey("planner_json")
 
-    // Daily limit (global)
+    // Daily limits (global)
     private val DAILY_SCROLL_LIMIT = intPreferencesKey("daily_scroll_limit")
+    private val DAILY_TIME_LIMIT_MS = longPreferencesKey("daily_time_limit_ms")
 
     // First launch
     private val HAS_LAUNCHED = booleanPreferencesKey("has_launched")
@@ -214,6 +216,14 @@ object BlockerPreferences {
 
     suspend fun setDailyScrollLimit(context: Context, limit: Int) {
         context.dataStore.edit { prefs -> prefs[DAILY_SCROLL_LIMIT] = limit }
+    }
+
+    fun getDailyTimeLimit(context: Context): Flow<Long> {
+        return context.dataStore.data.map { prefs -> prefs[DAILY_TIME_LIMIT_MS] ?: 0L }
+    }
+
+    suspend fun setDailyTimeLimit(context: Context, limitMs: Long) {
+        context.dataStore.edit { prefs -> prefs[DAILY_TIME_LIMIT_MS] = limitMs }
     }
 
     // ---- First Launch ----

@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -88,6 +89,8 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
     var plannerEntries by remember { mutableStateOf<List<PlannerEntry>>(emptyList()) }
     var dailyLimit by remember { mutableIntStateOf(0) }
     var dailyLimitSlider by remember { mutableFloatStateOf(0f) }
+    var dailyTimeLimitMinutes by remember { mutableIntStateOf(0) }
+    var dailyTimeLimitSlider by remember { mutableFloatStateOf(0f) }
     var weeklyTotals by remember { mutableStateOf<UsageStatsEntity?>(null) }
     var showAddPlannerDialog by remember { mutableStateOf(false) }
     var showAddProfileDialog by remember { mutableStateOf(false) }
@@ -99,6 +102,13 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
     LaunchedEffect(Unit) { BlockerPreferences.getPlanner(context).collect { plannerEntries = it } }
     LaunchedEffect(Unit) {
         BlockerPreferences.getDailyScrollLimit(context).collect { dailyLimit = it; dailyLimitSlider = it.toFloat() }
+    }
+    LaunchedEffect(Unit) {
+        BlockerPreferences.getDailyTimeLimit(context).collect { limitMs ->
+            val minutes = (limitMs / 60_000L).toInt()
+            dailyTimeLimitMinutes = minutes
+            dailyTimeLimitSlider = minutes.toFloat()
+        }
     }
     LaunchedEffect(Unit) {
         weeklyTotals = dao.getTotalsForRange(sevenDaysAgo, today)
@@ -258,40 +268,79 @@ fun SettingsScreen(onNavigateToAppList: () -> Unit) {
             }
         }
 
-        // Daily scroll limit
+        // Daily limits
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        "Limite quotidienne de scrolls",
+                        "Limites journalières",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    InfoIcon("Une fois cette limite atteinte, toutes les apps bloquées deviennent totalement inaccessibles jusqu'à minuit.")
+                    InfoIcon("Une fois une limite atteinte, toutes les apps bloquées deviennent totalement inaccessibles jusqu'à minuit.")
                 }
-                Text(
-                    text = if (dailyLimit == 0) "Pas de limite" else "$dailyLimit scrolls/jour",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Slider(
-                    value = dailyLimitSlider,
-                    onValueChange = { dailyLimitSlider = it },
-                    onValueChangeFinished = {
-                        scope.launch { BlockerPreferences.setDailyScrollLimit(context, dailyLimitSlider.roundToInt()) }
-                    },
-                    valueRange = 0f..1000f, steps = 19
-                )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Illimité", style = MaterialTheme.typography.bodySmall)
-                    Text("1000", style = MaterialTheme.typography.bodySmall)
+
+                // Scroll limit
+                Column {
+                    Text(
+                        text = "Scrolls",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = if (dailyLimit == 0) "Pas de limite" else "$dailyLimit scrolls/jour",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Slider(
+                        value = dailyLimitSlider,
+                        onValueChange = { dailyLimitSlider = it },
+                        onValueChangeFinished = {
+                            scope.launch { BlockerPreferences.setDailyScrollLimit(context, dailyLimitSlider.roundToInt()) }
+                        },
+                        valueRange = 0f..1000f, steps = 19
+                    )
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Illimité", style = MaterialTheme.typography.bodySmall)
+                        Text("1000", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+                // Time limit
+                Column {
+                    Text(
+                        text = "Temps d'écran",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = formatTimeLimitLabel(dailyTimeLimitMinutes),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Slider(
+                        value = dailyTimeLimitSlider,
+                        onValueChange = { dailyTimeLimitSlider = it },
+                        onValueChangeFinished = {
+                            val minutes = dailyTimeLimitSlider.roundToInt()
+                            dailyTimeLimitMinutes = minutes
+                            scope.launch { BlockerPreferences.setDailyTimeLimit(context, minutes * 60_000L) }
+                        },
+                        valueRange = 0f..120f, steps = 23
+                    )
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Illimité", style = MaterialTheme.typography.bodySmall)
+                        Text("2h", style = MaterialTheme.typography.bodySmall)
+                    }
                 }
             }
         }
@@ -541,6 +590,16 @@ private fun EditProfileDialog(profile: Profile, onDismiss: () -> Unit, onSave: (
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } }
     )
+}
+
+private fun formatTimeLimitLabel(minutes: Int): String = when {
+    minutes == 0 -> "Pas de limite"
+    minutes < 60 -> "${minutes}min/jour"
+    else -> {
+        val h = minutes / 60
+        val m = minutes % 60
+        if (m == 0) "${h}h/jour" else "${h}h${m.toString().padStart(2, '0')}/jour"
+    }
 }
 
 @Composable

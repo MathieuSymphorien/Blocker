@@ -16,7 +16,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Battery4Bar
 import androidx.compose.material.icons.filled.BatteryChargingFull
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Lightbulb
@@ -186,6 +188,22 @@ fun TipsScreen() {
             AboutCard(modifier = Modifier.padding(horizontal = 16.dp))
         }
 
+        // ── Compatibilité appareils ───────────────────────────────────────────
+        item {
+            Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 4.dp)) {
+                SectionHeader(title = stringResource(R.string.guide_compat_title))
+                Text(
+                    text = stringResource(R.string.guide_compat_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+        }
+        item {
+            CompatCard(modifier = Modifier.padding(horizontal = 16.dp))
+        }
+
         // ── Fonctionnalités ───────────────────────────────────────────────────
         item {
             SectionHeader(
@@ -308,6 +326,37 @@ private fun AboutRow(item: AboutItem) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+
+// ── Compat composables ────────────────────────────────────────────────────────
+
+@Composable
+private fun CompatCard(modifier: Modifier = Modifier) {
+    val items = listOf(
+        AboutItem(Icons.Default.Battery4Bar,  stringResource(R.string.guide_compat_battery_title), stringResource(R.string.guide_compat_battery_desc)),
+        AboutItem(Icons.Default.Smartphone,   stringResource(R.string.guide_compat_xiaomi_title),  stringResource(R.string.guide_compat_xiaomi_desc)),
+        AboutItem(Icons.Default.PhoneAndroid, stringResource(R.string.guide_compat_samsung_title), stringResource(R.string.guide_compat_samsung_desc)),
+        AboutItem(Icons.Default.Smartphone,   stringResource(R.string.guide_compat_huawei_title),  stringResource(R.string.guide_compat_huawei_desc)),
+        AboutItem(Icons.Default.PhoneAndroid, stringResource(R.string.guide_compat_oneplus_title), stringResource(R.string.guide_compat_oneplus_desc)),
+    )
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            items.forEachIndexed { index, item ->
+                AboutRow(item = item)
+                if (index < items.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    )
+                }
+            }
         }
     }
 }
